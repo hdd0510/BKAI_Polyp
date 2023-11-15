@@ -17,8 +17,8 @@ model.to(device)
 
 # Load the checkpoint
 parser = argparse.ArgumentParser(description='Polyp Segmentation Inference')
-parser.add_argument('checkpoint', type=str, help='Path to the model checkpoint')
-parser.add_argument('test_dir', type=str, help='Directory path to test images')
+parser.add_argument('--checkpoint', type=str, help='Path to the model checkpoint')
+parser.add_argument('--test_dir', type=str, help='Directory path to test images')
 args = parser.parse_args()
 checkpoint = torch.load(args.checkpoint, map_location=device)
 model.load_state_dict(checkpoint['model'])
