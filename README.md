@@ -12,17 +12,11 @@ import requests
 import os
 
 # Replace YOUR_DRIVE_URL with the direct link to the Google Drive file
-<<<<<<< HEAD
 drive_url = 'YOUR_DRIVE_URL'
 ''''
 https://drive.google.com/u/0/uc?id=1rE66914xj9HfNXFHGjtMxMq--Hbk3A69&export=download&confirm=t&uuid=2b4102a9\
     -5972-416b-97eb-88ba28ee326d&at=AB6BwCAGuaEHjfdCyfAwGaV0E-O9:1700047389408'
 '''
-=======
-drive_url = 'YOUR_DRIVE_URL' # 'https://drive.google.com/u/0/uc?id=1rE66914xj9HfNXFHGjtMxMq--Hbk3A69&export=download&confirm=t&uuid=2b4102a9\
-    -5972-416b-97eb-88ba28ee326d&at=AB6BwCAGuaEHjfdCyfAwGaV0E-O9:1700047389408'
->>>>>>> 9c2025346206e7e7998885702e0ed92b54566cd6
-
 # Directory where the downloaded file will be saved
 save_dir = '/kaggle/working/'
 
@@ -43,8 +37,4 @@ with open(os.path.join(save_dir, 'model.pth'), 'wb') as f:
 !python /kaggle/working/BKAI_Polyp/infer.py --checkpoint '/kaggle/working/model.pth' --test_dir '/kaggle/input/bkai-igh-neopolyp/test/test' --mask_dir '/kaggle/working/predicted_mask'
 
 # parse args checkpoint, test_dir (please add data of competition), mask_dir
-<<<<<<< HEAD
-```
-=======
-```
->>>>>>> 9c2025346206e7e7998885702e0ed92b54566cd6
+
