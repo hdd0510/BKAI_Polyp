@@ -30,9 +30,6 @@ import timm
 # In[8]:
 
 
-get_ipython().system('nvidia-smi')
-
-
 # In[9]:
 
 
