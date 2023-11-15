@@ -343,158 +343,130 @@ model = PolypModel(3)
 
 # In[20]:
 
-
+if __name__ == '__main__':
 # Define the optimizer (e.g., Adam optimizer)
-learning_rate = 0.0001
-optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+    learning_rate = 0.0001
+    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
 
-# In[21]:
+    # In[26]:
 
 
-get_ipython().system('pip install wandb')
-get_ipython().system("wandb login 'af3fff39f107c47a5441bad9ba81d9c46a34914b'")
+    # Set the number of training epochs
+    num_epochs = 200
 
-
-# In[22]:
-
-
-import wandb
-wandb.login()
-
-
-# In[25]:
-
-
-wandb.init(
-    project = 'Polyp',
-    config = {
-        'learning_rate': 0.0001,
-        'architecture': 'Unet',
-        'dataset': 'Polyp',
-        'epoch': 300
-    }
-)
-
-
-# In[26]:
-
-
-# Set the number of training epochs
-num_epochs = 200
-
-# Move the model to the device (e.g., GPU)
-device = torch.device('cuda' if torch.cuda.is_available() else "cpu")
-model.to(device)
-criterion = nn.CrossEntropyLoss()
-train_loss_array = []
-best_val_loss = 999
-# Training loop
-for epoch in range(num_epochs):
-    model.train()
-    total_loss = 0
-    for images, labels in train_loader:
-        images = images.to(device)
-        labels = labels.to(device)
-        # Forward pass
-        labels = labels.squeeze(dim=1).long()
-
-        outputs = model(images)
-
-        loss = criterion(outputs, labels)
-        
-        # Backward pass and optimization
-        loss.backward()
-        optimizer.step()
-        optimizer.zero_grad()
-        total_loss += loss.item()  # Accumulate the loss
-    train_loss = total_loss / len(train_loader)
-
-        
-# Perform validation
-    model.eval()
-    with torch.no_grad():
-        val_loss = 0
-        for images, labels in val_loader:
+    # Move the model to the device (e.g., GPU)
+    device = torch.device('cuda' if torch.cuda.is_available() else "cpu")
+    model.to(device)
+    criterion = nn.CrossEntropyLoss()
+    train_loss_array = []
+    best_val_loss = 999
+    # Training loop
+    for epoch in range(num_epochs):
+        model.train()
+        total_loss = 0
+        for images, labels in train_loader:
             images = images.to(device)
             labels = labels.to(device)
+            # Forward pass
             labels = labels.squeeze(dim=1).long()
 
-            # Forward pass
             outputs = model(images)
-            val_loss += criterion(outputs.float(),labels.long()).item()
 
-    # Print the loss for this epoch
-    print(f"Epoch [{epoch+1}/{num_epochs}], val_loss: {val_loss/len(val_loader):.10f}")
-    if val_loss < best_val_loss:
-        best_val_loss = val_loss
-        checkpoint = { 
-            'epoch': epoch,
-            'model': model.state_dict(),
-            'optimizer': optimizer.state_dict(),
-            'loss': val_loss,
-        }
-        save_path = f'colorization_model.pth'
-        torch.save(checkpoint, save_path)
-        print('SAVE +1')
-    # Calculate average loss for the epoch
-    
-    wandb.log({'Val_loss': val_loss/len(val_loader),
-               'Train_loss': train_loss
-              })
+            loss = criterion(outputs, labels)
+            
+            # Backward pass and optimization
+            loss.backward()
+            optimizer.step()
+            optimizer.zero_grad()
+            total_loss += loss.item()  # Accumulate the loss
+        train_loss = total_loss / len(train_loader)
 
+            
+    # Perform validation
+        model.eval()
+        with torch.no_grad():
+            val_loss = 0
+            for images, labels in val_loader:
+                images = images.to(device)
+                labels = labels.to(device)
+                labels = labels.squeeze(dim=1).long()
 
-# In[ ]:
+                # Forward pass
+                outputs = model(images)
+                val_loss += criterion(outputs.float(),labels.long()).item()
 
-
-# checkpoint = torch.load('/kaggle/input/checkpointunet/unet.pth')
-# model.load_state_dict(checkpoint['model'])
-# device = torch.device('cuda' if torch.cuda.is_available() else "cpu")
-# model.to(device)
-# optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)  # Thay đổi các tham số theo cấu hình của bạn
-
-# # Nạp trạng thái của optimizer từ checkpoint
-# optimizer.load_state_dict(checkpoint['optimizer'])
-
-# # Sau khi nạp trạng thái, đưa cả model và optimizer lên device
-# model.to(device)
-# for state in optimizer.state.values():
-#     for k, v in state.items():
-#         if isinstance(v, torch.Tensor):
-#             state[k] = v.to(device)
-# loss_value = checkpoint['loss']
-
-# # Move the loss tensor to the appropriate device
-# # loss_tensor = loss_tensor.to(device)
-
-# # If you need to use the loss as a Python scalar, for example for printing or comparisons:
-# # loss_value = loss_tensor.item()
-
-# # Now you can print or compare `loss_value` as needed
-# print(f"The loss from the checkpoint is: {loss_value:.10f}")
+        # Print the loss for this epoch
+        print(f"Epoch [{epoch+1}/{num_epochs}], val_loss: {val_loss/len(val_loader):.10f}")
+        if val_loss < best_val_loss:
+            best_val_loss = val_loss
+            checkpoint = { 
+                'epoch': epoch,
+                'model': model.state_dict(),
+                'optimizer': optimizer.state_dict(),
+                'loss': val_loss,
+            }
+            save_path = f'colorization_model.pth'
+            torch.save(checkpoint, save_path)
+            print('SAVE +1')
+        # Calculate average loss for the epoch
+        
+        wandb.log({'Val_loss': val_loss/len(val_loader),
+                'Train_loss': train_loss
+                })
 
 
-# In[ ]:
+    # In[ ]:
 
 
-# !mkdir -p /kaggle/working/colorization_model
-# !mv /kaggle/working/colorization_model.pth /kaggle/working/colorization_model  # Move the file into the folder for the dataset
-# !kaggle datasets init -p /kaggle/working/colorization_model
+    # checkpoint = torch.load('/kaggle/input/checkpointunet/unet.pth')
+    # model.load_state_dict(checkpoint['model'])
+    # device = torch.device('cuda' if torch.cuda.is_available() else "cpu")
+    # model.to(device)
+    # optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)  # Thay đổi các tham số theo cấu hình của bạn
 
-# # Manually edit the dataset-metadata.json file here to include your dataset's metadata
+    # # Nạp trạng thái của optimizer từ checkpoint
+    # optimizer.load_state_dict(checkpoint['optimizer'])
 
-# # After editing the JSON, create or update the dataset on Kaggle
-# !kaggle datasets create -p /kaggle/working/colorization_model -u
+    # # Sau khi nạp trạng thái, đưa cả model và optimizer lên device
+    # model.to(device)
+    # for state in optimizer.state.values():
+    #     for k, v in state.items():
+    #         if isinstance(v, torch.Tensor):
+    #             state[k] = v.to(device)
+    # loss_value = checkpoint['loss']
+
+    # # Move the loss tensor to the appropriate device
+    # # loss_tensor = loss_tensor.to(device)
+
+    # # If you need to use the loss as a Python scalar, for example for printing or comparisons:
+    # # loss_value = loss_tensor.item()
+
+    # # Now you can print or compare `loss_value` as needed
+    # print(f"The loss from the checkpoint is: {loss_value:.10f}")
 
 
-# In[ ]:
+    # In[ ]:
 
 
-get_ipython().system('mkdir test_mask')
-get_ipython().system('mkdir test_overlapmask')
+    # !mkdir -p /kaggle/working/colorization_model
+    # !mv /kaggle/working/colorization_model.pth /kaggle/working/colorization_model  # Move the file into the folder for the dataset
+    # !kaggle datasets init -p /kaggle/working/colorization_model
+
+    # # Manually edit the dataset-metadata.json file here to include your dataset's metadata
+
+    # # After editing the JSON, create or update the dataset on Kaggle
+    # !kaggle datasets create -p /kaggle/working/colorization_model -u
 
 
-# In[ ]:
+    # In[ ]:
+
+
+    get_ipython().system('mkdir test_mask')
+    get_ipython().system('mkdir test_overlapmask')
+
+
+    # In[ ]:
 
 
 model.eval()
