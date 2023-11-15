@@ -59,7 +59,7 @@ for i in os.listdir(args.test_dir):
     mask = np.argmax(mask, axis=2)
     mask_rgb = mask_to_rgb(mask, color_dict)
     mask_rgb = cv2.cvtColor(mask_rgb, cv2.COLOR_RGB2BGR)
-    cv2.imwrite("predicted_mask/{}".format(i), mask_rgb)
+    cv2.imwrite(f'{args.mask_dir}/{i}',mask_rgb)
     print('Predicted mask saved')
 
 def rle_to_string(runs):
