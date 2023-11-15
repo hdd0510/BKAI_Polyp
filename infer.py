@@ -19,6 +19,7 @@ model.to(device)
 parser = argparse.ArgumentParser(description='Polyp Segmentation Inference')
 parser.add_argument('--checkpoint', type=str, help='Path to the model checkpoint')
 parser.add_argument('--test_dir', type=str, help='Directory path to test images')
+parser.add_argument('--mask_dir', type=str, help='Directory path to save predicted masks')
 args = parser.parse_args()
 checkpoint = torch.load(args.checkpoint, map_location=device)
 model.load_state_dict(checkpoint['model'])
@@ -121,7 +122,7 @@ def mask2string(dir):
     return r
 
 
-MASK_DIR_PATH = '/kaggle/working/predicted_mask' 
+MASK_DIR_PATH = args.mask_dir
 dir = MASK_DIR_PATH
 res = mask2string(dir)
 df = pd.DataFrame(columns=['Id', 'Expected'])
