@@ -67,8 +67,8 @@ def rle_to_string(runs):
 
 def rle_encode_one_mask(mask):
     pixels = mask.flatten()
-    pixels[pixels > 225] = 255
-    pixels[pixels <= 225] = 0
+    pixels[pixels >= 225] = 255
+    pixels[pixels < 225] = 0
     use_padding = False
     if pixels[0] or pixels[-1]:
         use_padding = True
