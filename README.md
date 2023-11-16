@@ -15,7 +15,7 @@ import os
 drive_url = 'YOUR_DRIVE_URL'
 ''''
 https://drive.google.com/u/0/uc?id=1rE66914xj9HfNXFHGjtMxMq--Hbk3A69&export=download&confirm=t&uuid=2b4102a9\
-    -5972-416b-97eb-88ba28ee326d&at=AB6BwCAGuaEHjfdCyfAwGaV0E-O9:1700047389408'
+    -5972-416b-97eb-88ba28ee326d&at=AB6BwCAGuaEHjfdCyfAwGaV0E-O9:1700047389408
 '''
 # Directory where the downloaded file will be saved
 save_dir = '/kaggle/working/'
